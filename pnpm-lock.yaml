@@ -41,6 +41,7 @@ specifiers:
   tsconfig-paths: 4.2.0
   typeorm: 0.3.16
   typescript: ^4.7.4
+  user-app: 'link:'
 
 dependencies:
   '@nestjs/common': 9.4.2_j3td4gnlgk75ora6o6suo62byy
@@ -60,6 +61,7 @@ dependencies:
   reflect-metadata: 0.1.13
   rxjs: 7.8.1
   typeorm: 0.3.16_pg@8.11.0+ts-node@10.9.1
+  user-app: 'link:'
 
 devDependencies:
   '@nestjs/cli': 9.5.0
