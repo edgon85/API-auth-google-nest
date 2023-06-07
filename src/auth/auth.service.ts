@@ -44,6 +44,53 @@ export class AuthService {
     }
   }
 
+  public async createUserOauth(emailOauth: string, fullNameOauth: string) {
+    try {
+      const newUser = {
+        email: emailOauth,
+        password: bcrypt.hashSync('P@ssw0rd', 10),
+        fullName: fullNameOauth,
+      };
+
+      const user = this.authRepository.create(newUser);
+      await this.authRepository.save(user);
+
+      return {
+        ...user,
+        token: this.getToken({ id: user.id }),
+      };
+    } catch (error) {
+      this.handleDBErrors(error);
+    }
+  }
+
+  /* ························································· */
+  public async validateUserOauth(emailOauth: string, fullNameOauth: string) {
+    const user = await this.authRepository.findOneBy({ email: emailOauth });
+
+    if (user)
+      return {
+        ...user,
+        token: this.getToken({ id: user.id }),
+      };
+
+    const tempUser = {
+      email: emailOauth,
+      password: bcrypt.hashSync('P@ssw0rd', 10),
+      fullName: fullNameOauth,
+    };
+
+    const newUser = this.authRepository.create(tempUser);
+
+    await this.authRepository.save(newUser);
+
+    delete newUser.password;
+
+    return {
+      ...newUser,
+      token: this.getToken({ id: user.id }),
+    };
+  }
   /* ························································· */
   public async login(loginUsedDto: LoginUserDto) {
     const { email, password } = loginUsedDto;
@@ -72,6 +119,13 @@ export class AuthService {
       ...user,
       token: this.getToken({ id: user.id }),
     };
+  }
+
+  /* ······················································ */
+
+  async findUser(id: string) {
+    const user = await this.authRepository.findOneBy({ id });
+    return this.checkAuthStatus(user);
   }
 
   /* ······················································ */

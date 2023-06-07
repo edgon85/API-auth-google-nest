@@ -7,16 +7,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './entities';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { JwtStrategy } from './strategies';
-
+import { GoogleStrategy, JwtStrategy } from './strategies';
+import { SessionSerializer } from './serializer';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, GoogleStrategy, SessionSerializer],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

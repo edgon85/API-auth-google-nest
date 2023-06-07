@@ -1,9 +1,18 @@
-import { Controller, Post, Body, Get, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './decorators';
 import { User } from './entities';
+import { GoogleAuthGuard } from './guards';
 
 @Controller('auth')
 export class AuthController {
@@ -20,16 +29,32 @@ export class AuthController {
   }
 
   @Get('private')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   testingPrivateRoute(
     // @Req() req: Express.Request
-    @GetUser() user: User
-    ) {
+    @GetUser() user: User,
+  ) {
     console.log(user);
     return {
       ok: true,
       message: 'Hola mundo',
       user,
     };
+  }
+
+  @Get('google/login')
+  @UseGuards(GoogleAuthGuard)
+  async handleLogin() {
+    return { msg: 'Google authentication' };
+  }
+
+  @Get('google/redirect')
+  @UseGuards(GoogleAuthGuard)
+  async handleRedirect(
+    /* @Res() res: Express.Request,
+    @GetUser() user: User, */
+    @Req() req: Express.Request,
+  ) {
+    return { msg: 'ok', user: req.user};
   }
 }
