@@ -10,9 +10,10 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from './decorators';
+import { Auth, GetUser } from './decorators';
 import { User } from './entities';
-import { GoogleAuthGuard } from './guards';
+import { GoogleAuthGuard, UserRoleGuard } from './guards';
+import { ValidRoles } from './interfaces';
 
 @Controller('auth')
 export class AuthController {
@@ -62,10 +63,27 @@ export class AuthController {
   @UseGuards(AuthGuard('next-auth'))
   async getExampleData(@Req() req: Express.Request) {
     console.log(req.user);
-    
+
     return {
       ok: true,
       user: req.user,
+    };
+  }
+
+  @Get('private2')
+  @UseGuards(AuthGuard(), UserRoleGuard)
+  privateRoute2(@GetUser() user: User) {
+    return {
+      ok: true,
+      message: 'holi',
+    };
+  }
+  @Get('private3')
+  @Auth(ValidRoles.admin)
+  privateRoute4(@GetUser() user: User) {
+    return {
+      ok: true,
+      user,
     };
   }
 }
