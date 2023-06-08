@@ -55,6 +55,17 @@ export class AuthController {
     @GetUser() user: User, */
     @Req() req: Express.Request,
   ) {
-    return { msg: 'ok', user: req.user};
+    return { msg: 'ok', user: req.user };
+  }
+
+  @Post('next-auth')
+  @UseGuards(AuthGuard('next-auth'))
+  async getExampleData(@Req() req: Express.Request) {
+    console.log(req.user);
+    
+    return {
+      ok: true,
+      user: req.user,
+    };
   }
 }

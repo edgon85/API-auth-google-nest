@@ -7,12 +7,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './entities';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { GoogleStrategy, JwtStrategy } from './strategies';
+import { GoogleStrategy, JwtStrategy, NextAuthStrategy } from './strategies';
 import { SessionSerializer } from './serializer';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, GoogleStrategy, SessionSerializer],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    GoogleStrategy,
+    SessionSerializer,
+    NextAuthStrategy,
+  ],
   imports: [
     ConfigModule,
     TypeOrmModule.forFeature([User]),
